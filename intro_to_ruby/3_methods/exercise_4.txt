@@ -1,0 +1,1 @@
+The code will print nothing to the screen since the scream() method returns before the line where the puts() method is called
