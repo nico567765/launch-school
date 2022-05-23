@@ -1,0 +1,4 @@
+The problem with the code is that it is attempting to use a value ('margaret') where an index number (3) should be.
+
+line 2 should be rewritten as:
+names[3] = 'jody'

@@ -1,0 +1,2 @@
+in the first hash, 'x:' becomes the symbol :x
+in the second hash, x => creates a key using the value referenced by the existing variable x

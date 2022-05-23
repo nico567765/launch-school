@@ -1,0 +1,3 @@
+# exercise 1
+
+The each method returns the original array it is iterating over
