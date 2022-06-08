@@ -5,55 +5,33 @@
 
 
 def prompt(message)
-  puts("=> #{message}")
+  Kernel.puts("=> #{message}")
 end
 
-def valid_integer?(num)
-  # check type conversion returns a truthy value, return true or false accordingly
-  if (Integer(num) rescue false)
-    true
-  else
-    false
-  end
-end
-
-def valid_float?(num)
-  if (Float(num) rescue false)
-    true
-  else
-    false
-  end
-end
-
-def number?(num)
-  if valid_integer?(num) || valid_float?(num)
-    true
-  else
-    false
-  end
+def valid_number?(num)
+  num.to_i() != 0
 end
 
 def operation_to_message(op)
-  message = case op
-            when '1'
-              'Adding'
-            when '2'
-              'Subtracting'
-            when '3'
-              'Multiplying'
-            when '4'
-              'Dividing'
-            end
-  return message
+  case op
+  when '1'
+    'Adding'
+  when '2'
+    'Subtracting'
+  when '3'
+    'Multiplying'
+  when '4'
+    'Dividing'
+  end
 end
 
 prompt("Welcome to Calculator! Enter your name:")
 
 name = ''
 loop do
-  name = gets.chomp
+  name = Kernel.gets().chomp()
 
-  if name.empty?
+  if name.empty?()
     prompt("Make sure to use a valid name.")
   else
     break
@@ -66,8 +44,8 @@ loop do # main loop
   number1 = ''
   loop do
     prompt("What's the first number?")
-    number1 = gets.chomp
-    if number?(number1)
+    number1 = Kernel.gets().chomp()
+    if valid_number?(number1)
       break
     else
       prompt("Hmm... that doesn't look like a valid number")
@@ -76,9 +54,9 @@ loop do # main loop
   number2 = ''
   loop do
     prompt("What's the second number?")
-    number2 = gets.chomp
+    number2 = Kernel.gets().chomp()
 
-    if number?(number2)
+    if valid_number?(number2)
       break
     else
       prompt("Hmm... that doesn't look like a valid number")
@@ -97,7 +75,7 @@ loop do # main loop
 
   operator = ''
   loop do
-    operator = gets.chomp
+    operator = Kernel.gets().chomp()
     if %w(1 2 3 4).include?(operator)
       break
     else
@@ -109,20 +87,20 @@ loop do # main loop
 
   result = case operator
            when '1'
-             number1.to_i + number2.to_i
+             number1.to_i() + number2.to_i()
            when '2'
-             number1.to_i - number2.to_i
+             number1.to_i() - number2.to_i()
            when '3'
-             number1.to_i * number2.to_i
+             number1.to_i() * number2.to_i()
            when '4'
-             number1.to_f / number2.to_f
+             number1.to_f() / number2.to_f()
            end
 
   prompt("The result is #{result}")
 
   prompt("Do you want to perform another calculation? (Y to calculate again)")
-  answer = gets.chomp
-  break unless answer.downcase.start_with?('y')
+  answer = Kernel.gets().chomp()
+  break unless answer.downcase().start_with?('y')
 end
 
 prompt("Thank you for using the calculator, #{name}. Goodbye!")

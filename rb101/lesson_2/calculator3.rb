@@ -4,6 +4,32 @@
 # output the result
 
 
+def get_language
+  prompt <<-HEREDOC
+  1. English
+     2. Español
+     3. Français
+  HEREDOC
+  while true
+    choice = gets.chomp
+    if valid_integer?(choice)
+      choice = choice.to_i
+      break
+    else
+      prompt("Enter 1, 2 or 3")
+    end
+  end
+  language =  case choice
+              when 1
+               :english
+              when 2
+               :spanish
+              when 3
+               :french
+              end
+  language
+end
+
 def prompt(message)
   puts("=> #{message}")
 end
@@ -36,62 +62,65 @@ end
 def operation_to_message(op)
   message = case op
             when '1'
-              'Adding'
+              WORDS[:op_to_msg]['1']
             when '2'
-              'Subtracting'
+              WORDS[:op_to_msg]['2']
             when '3'
-              'Multiplying'
+              WORDS[:op_to_msg]['3']
             when '4'
-              'Dividing'
+              WORDS[:op_to_msg]['4']
             end
   return message
 end
 
-prompt("Welcome to Calculator! Enter your name:")
+# START main
+
+# get choice of language
+require 'yaml'
+
+output_text = YAML.load(File.read("/home/nick/launch_school/rb101/lesson_2/calculator.yml"))
+
+WORDS = output_text[get_language]
+
+prompt(WORDS[:greeting])
 
 name = ''
 loop do
   name = gets.chomp
 
   if name.empty?
-    prompt("Make sure to use a valid name.")
+    prompt(WORDS[:name_empty])
   else
     break
   end
 end
 
-prompt("Hi #{name}!")
+prompt(WORDS[:name_greeting] + name + '!')
 
 loop do # main loop
   number1 = ''
   loop do
-    prompt("What's the first number?")
+    prompt(WORDS[:first_num])
     number1 = gets.chomp
     if number?(number1)
       break
     else
-      prompt("Hmm... that doesn't look like a valid number")
+      prompt(WORDS[:invalid_num])
     end
   end
   number2 = ''
   loop do
-    prompt("What's the second number?")
+    prompt(WORDS[:second_num])
     number2 = gets.chomp
 
     if number?(number2)
       break
     else
-      prompt("Hmm... that doesn't look like a valid number")
+      prompt(WORDS[:invalid_num])
     end
   end
 
-  operator_prompt = <<-MSG
-  What operation would you like to perform?
-  1) add 
-  2) subtract 
-  3) multiply 
-  4) divide
-  MSG
+  operator_prompt = WORDS[:op_prompt]
 
   prompt(operator_prompt)
 
@@ -101,11 +130,11 @@ loop do # main loop
     if %w(1 2 3 4).include?(operator)
       break
     else
-      prompt("Must choose 1, 2, 3 or 4")
+      prompt(WORDS[:invalid_op])
     end
   end
 
-  prompt("#{operation_to_message(operator)} the two numbers...")
+  prompt("#{operation_to_message(operator)} #{WORDS[:wait_msg]}")
 
   result = case operator
            when '1'
@@ -118,11 +147,11 @@ loop do # main loop
              number1.to_f / number2.to_f
            end
 
-  prompt("The result is #{result}")
+  prompt("#{WORDS[:result]} #{result}")
 
-  prompt("Do you want to perform another calculation? (Y to calculate again)")
+  prompt(WORDS[:again])
   answer = gets.chomp
   break unless answer.downcase.start_with?('y')
 end
 
-prompt("Thank you for using the calculator, #{name}. Goodbye!")
+prompt(WORDS[:goodbye])
