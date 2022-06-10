@@ -1,5 +1,7 @@
-require 'yaml'
+def call_proc(proc)
+  proc.call
+end
 
-words = YAML.load(File.read("/home/nick/launch_school/rb101/lesson_2/calculator.yml"))
+proc = { puts 'hello'}
 
-puts ">> #{words[:op_prompt]}"
+call_proc(proc)
