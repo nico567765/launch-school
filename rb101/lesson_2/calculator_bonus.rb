@@ -59,8 +59,8 @@ def get_name
 end
 
 def get_operator
+  prompt(WORDS[:op_prompt])
   loop do
-    prompt(WORDS[:op_prompt])
     operator = gets.chomp
     if %w(1 2 3 4).include?(operator)
       return operator
@@ -95,22 +95,13 @@ prompt(WORDS[:name_greeting] + name + '!')
 
 # main loop
 loop do
+  # ask for numbers and operator
   number1 = get_number(WORDS[:first_num])
- 
   number2 = get_number(WORDS[:second_num])
-
   operator = get_operator
-  # loop do
-  #   operator = gets.chomp
-  #   if %w(1 2 3 4).include?(operator)
-  #     break
-  #   else
-  #     prompt(WORDS[:invalid_op])
-  #   end
-  # end
 
+  # calculate result
   prompt("#{operation_to_message(operator)} #{WORDS[:wait_msg]}")
-
   result = case operator
            when '1'
              number1.to_f + number2.to_f
@@ -121,9 +112,9 @@ loop do
            when '4'
              number1.to_f / number2.to_f
            end
-
   prompt("#{WORDS[:result]} #{result}")
-
+  
+  # ask if user wants to perform another operation
   prompt(WORDS[:again])
   answer = gets.chomp
   break unless answer.downcase.start_with?('y')
