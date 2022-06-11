@@ -12,7 +12,7 @@ def get_language
     :spanish
   when '3'
     :french
-  else 
+  else
     :english
   end
 end
@@ -49,7 +49,6 @@ end
 def get_name
   loop do
     name = gets.chomp
-  
     if name.empty?
       prompt(WORDS[:name_empty])
     else
@@ -113,7 +112,7 @@ loop do
              number1.to_f / number2.to_f
            end
   prompt("#{WORDS[:result]} #{result}")
-  
+
   # ask if user wants to perform another operation
   prompt(WORDS[:again])
   answer = gets.chomp
