@@ -1,7 +1,11 @@
-def call_proc(proc)
-  proc.call
+a = [1,2,3]
+
+def cc(str)
+  str += str
+  str[1] = 34
+  p str
 end
 
-proc = { puts 'hello'}
-
-call_proc(proc)
+p "Before cc method: #{a}"
+cc(a)
+p "After cc method: #{a}"

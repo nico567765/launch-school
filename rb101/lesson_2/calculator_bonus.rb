@@ -1,5 +1,6 @@
 # Calculator with bonus features
 
+# method definitions
 def get_language
   prompt("1. English\n   2. Spanish\n   3. French")
   while true
@@ -7,12 +8,12 @@ def get_language
     valid_integer?(choice) ? break : prompt("Enter 1, 2 or 3")
   end
   case choice
-  when '1'
-    :english
   when '2'
     :spanish
   when '3'
     :french
+  else 
+    :english
   end
 end
 
@@ -45,66 +46,68 @@ def operation_to_message(op)
   end
 end
 
-# get choice of language
-require 'yaml'
-
-output_text =
-  YAML.safe_load(File.read('calculator.yml'), permitted_classes: [Symbol])
-
-WORDS = output_text[get_language]
-
-prompt(WORDS[:greeting])
-
-name = ''
-loop do
-  name = gets.chomp
-
-  if name.empty?
-    prompt(WORDS[:name_empty])
-  else
-    break
+def get_name
+  loop do
+    name = gets.chomp
+  
+    if name.empty?
+      prompt(WORDS[:name_empty])
+    else
+      return name
+    end
   end
 end
 
-prompt(WORDS[:name_greeting] + name + '!')
-
-# main loop
-loop do
-  number1 = ''
+def get_operator
   loop do
-    prompt(WORDS[:first_num])
-    number1 = gets.chomp
-    if number?(number1)
-      break
-    else
-      prompt(WORDS[:invalid_num])
-    end
-  end
-  number2 = ''
-  loop do
-    prompt(WORDS[:second_num])
-    number2 = gets.chomp
-
-    if number?(number2)
-      break
-    else
-      prompt(WORDS[:invalid_num])
-    end
-  end
-
-  operator_prompt = WORDS[:op_prompt]
-
-  prompt(operator_prompt)
-
-  operator = ''
-  loop do
+    prompt(WORDS[:op_prompt])
     operator = gets.chomp
     if %w(1 2 3 4).include?(operator)
-      break
+      return operator
     else
       prompt(WORDS[:invalid_op])
     end
   end
+end
+
+def get_number(ask_for)
+  loop do
+    prompt(ask_for)
+    number = gets.chomp
+    if number?(number)
+      return number
+    else
+      prompt(WORDS[:invalid_num])
+    end
+  end
+end
+
+# main program
+# get choice of language
+require 'yaml'
+output_text = YAML.load_file('calculator.yml')
+WORDS = output_text[get_language]
+
+# ask name and greet user personally
+prompt(WORDS[:greeting])
+name = get_name
+prompt(WORDS[:name_greeting] + name + '!')
+
+# main loop
+loop do
+  number1 = get_number(WORDS[:first_num])
+ 
+  number2 = get_number(WORDS[:second_num])
+
+  operator = get_operator
+  # loop do
+  #   operator = gets.chomp
+  #   if %w(1 2 3 4).include?(operator)
+  #     break
+  #   else
+  #     prompt(WORDS[:invalid_op])
+  #   end
+  # end
 
   prompt("#{operation_to_message(operator)} #{WORDS[:wait_msg]}")
 
