@@ -81,6 +81,19 @@ def get_number(ask_for)
   end
 end
 
+def get_result(number1, number2, operator)
+  case operator
+  when '1'
+    number1.to_f + number2.to_f
+  when '2'
+    number1.to_f - number2.to_f
+  when '3'
+    number1.to_f * number2.to_f
+  when '4'
+    number1.to_f / number2.to_f
+  end
+end
+
 # main program
 # get choice of language
 require 'yaml'
@@ -101,16 +114,7 @@ loop do
 
   # calculate result
   prompt("#{operation_to_message(operator)} #{WORDS[:wait_msg]}")
-  result = case operator
-           when '1'
-             number1.to_f + number2.to_f
-           when '2'
-             number1.to_f - number2.to_f
-           when '3'
-             number1.to_f * number2.to_f
-           when '4'
-             number1.to_f / number2.to_f
-           end
+  result = get_result(number1, number2, operator)
   prompt("#{WORDS[:result]} #{result}")
 
   # ask if user wants to perform another operation
