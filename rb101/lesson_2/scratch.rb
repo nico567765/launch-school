@@ -1,11 +1,15 @@
-a = [1,2,3]
+LONGEST = 26
 
-def cc(str)
-  str += str
-  str[1] = 34
-  p str
+def al(str)
+  str = str.to_s
+  str.ljust(LONGEST)
 end
 
-p "Before cc method: #{a}"
-cc(a)
-p "After cc method: #{a}"
+def ar(str)
+  str = str.to_s
+  str.rjust(10)
+end
+
+puts al("Owls currently in the air:") + ar('389.986')
+puts al("Owls on the ground:") + ar('342')
+puts al("Owls underground:") + ar('232')
