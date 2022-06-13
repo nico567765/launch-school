@@ -1,4 +1,7 @@
-  # no_prompt "#{WORDS[:number_of_payments]} #{results[:number_of_payments]}".rjust(20)
-  # no_prompt "#{WORDS[:total_repayed]} #{results[:total_repayed].round(2)}"
-  # no_prompt "#{WORDS[:total_interest]} #{results[:total_interest].round(2)}"
+  # no_prompt l_align(WORDS[:number_of_payments]) +
+  #           r_align(results[:number_of_payments])
+  # no_prompt l_align(WORDS[:total_repayed]) +
+  #           r_align(results[:total_repayed].round(2))
+  # no_prompt l_align(WORDS[:total_interest]) +
+  #           r_align(results[:total_interest].round(2))
   # puts

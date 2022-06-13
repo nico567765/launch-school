@@ -1,6 +1,10 @@
 ---
 :english:
-  :greeting: Hello and welcome to Loan Calculator!
+  :greeting: Hi there, and welcome to Loan Calculator!
+  :name: |-
+    Please enter your name:
+  :name_empty: Make sure to enter your name.
+  :name_greet: Hi, %{name}!
   :amount_prompt: How much will you be borrowing?
   :apr_prompt: What is the Annual Percentage Rate (APR)?
   :duration_prompt: How many years duration is the loan?
@@ -15,4 +19,4 @@
   :valid_number: Please enter a valid number.
   :again: Would you like to make another loan calculation (Y or N)?
   :yes_or_no: Please enter Y or N.
-  :goodbye: Thanks for using the Loan Calculator. Goodbye!
+  :goodbye: Thanks for using the Loan Calculator, %{name}. Goodbye!

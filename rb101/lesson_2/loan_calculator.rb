@@ -22,6 +22,15 @@ def valid_number?(number)
   number.to_f.to_s == number || number.to_i.to_s == number
 end
 
+def get_name
+  prompt(WORDS[:name])
+  loop do
+    name = gets.chomp
+    return name unless name.empty?
+    prompt(WORDS[:name_empty])
+  end
+end
+
 def get_figure(message)
   loop do
     prompt(message)
@@ -45,51 +54,46 @@ end
 def get_repayments(loan_amount, apr, duration_years)
   monthly_interest = (apr / 100.0) / 12.0
   duration_months = (duration_years * 12.0).round(0)
-
   monthly_payment = loan_amount *
                     (monthly_interest / (1 -
                     (1 + monthly_interest)**(-duration_months)))
-
-  { monthly_payment: monthly_payment,
+  { monthly_payment: monthly_payment.round(2),
     number_of_payments: duration_months,
-    total_repayed: monthly_payment * duration_months,
-    total_interest:(monthly_payment * duration_months) - loan_amount }
+    total_repayed: (monthly_payment * duration_months).round(2),
+    total_interest: ((monthly_payment * duration_months) -
+                    loan_amount).round(2) }
 end
 
-def display_repayment(results)
-  # puts
-  # prompt    "#{WORDS[:monthly_payment]} #{results[:monthly_payment].round(2)}"
-  # no_prompt "#{WORDS[:number_of_payments]} #{results[:number_of_payments]}"
-  # no_prompt "#{WORDS[:total_repayed]} #{results[:total_repayed].round(2)}"
-  # no_prompt "#{WORDS[:total_interest]} #{results[:total_interest].round(2)}"
-  # puts
-  puts
-  prompt    l_align(WORDS[:monthly_payment]) +
-            r_align(results[:monthly_payment].round(2))
-  puts
-  no_prompt l_align(WORDS[:number_of_payments]) +
-            r_align(results[:number_of_payments])
-  no_prompt l_align(WORDS[:total_repayed]) +
-            r_align(results[:total_repayed].round(2))
-  no_prompt l_align(WORDS[:total_interest]) +
-            r_align(results[:total_interest].round(2))
-  puts
+def tabulate(results)
+  table = []
+  results.each do |key, val|
+    table << l_align(WORDS[key]) + r_align(val)
+  end
+  table
 end
 
+def display(table)
+  table.each_with_index do |elem, idx|
+    idx == 0 ? prompt(elem) : no_prompt(elem)
+  end
+end
 
 # get string data from file to allow for other languages
 require 'yaml'
 word_hash = YAML.load_file('loan_calculator.yml')
 WORDS = word_hash[:english]
 system('clear')
-
+prompt(WORDS[:greeting])
+name = get_name
+prompt(format(WORDS[:name_greet], name: name))
 # main program loop
 loop do
-  prompt(WORDS[:greeting])
   loan_amount = get_figure(WORDS[:amount_prompt]).to_f
   apr = get_figure(WORDS[:apr_prompt]).to_f
   duration_years = get_figure(WORDS[:duration_prompt]).to_f
   results = get_repayments(loan_amount, apr, duration_years)
-  display_repayment(results)
+  table = tabulate(results)
+  display(table)
   break unless go_again?
 end
+prompt(format(WORDS[:goodbye], name: name))
