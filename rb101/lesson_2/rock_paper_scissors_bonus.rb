@@ -1,34 +1,40 @@
 VALID_CHOICES = %w(rock paper scissors lizard spock)
 
-VALID_SHORTHAND = { 'r'  => 'rock',
-                    'p'  => 'paper',
-                    'sc' => 'scissors',
-                    'l'  => 'lizard',
-                    'sp' => 'spock' }
+VALID_SHORTHAND = {
+  'r' => 'rock',
+  'p' => 'paper',
+  'sc' => 'scissors',
+  'l' => 'lizard',
+  'sp' => 'spock'
+}
 
-X_BEATS_Y = { case_1: {
-                rock: 'scissors',
-                paper: 'rock',
-                scissors: 'paper',
-                lizard: 'spock',
-                spock: 'rock' },
-              case_2: {
-                rock: 'lizard',
-                paper: 'spock',
-                scissors: 'lizard',
-                lizard: 'paper',
-                spock: 'scissors' }}
+X_BEATS_Y = {
+  case_1: {
+    rock: 'scissors',
+    paper: 'rock',
+    scissors: 'paper',
+    lizard: 'spock',
+    spock: 'rock'
+  },
+  case_2: {
+    rock: 'lizard',
+    paper: 'spock',
+    scissors: 'lizard',
+    lizard: 'paper',
+    spock: 'scissors'
+  }
+}
 
 def prompt(message)
   puts "=> #{message}"
 end
 
-def win?(player_1, player_2)
-  X_BEATS_Y[:case_1][player_1.to_sym] == player_2 ||
-    X_BEATS_Y[:case_2][player_1.to_sym] == player_2
+def win?(player1, player2)
+  X_BEATS_Y[:case_1][player1.to_sym] == player2 ||
+    X_BEATS_Y[:case_2][player1.to_sym] == player2
 end
 
-def display_results(winner)
+def display_match_results(winner)
   if winner == 'player'
     prompt("You won!")
   elsif winner == 'computer'
@@ -37,6 +43,16 @@ def display_results(winner)
     prompt("It's a tie!")
   end
   puts
+end
+
+def display_round_results(player_score, computer_score)
+  prompt("At the end of that round you scored #{player_score}, "\
+    "Computer scored #{computer_score}")
+  if player_score > computer_score
+    prompt("Congratulations! You won!")
+  else
+    prompt("Better luck next time...")
+  end
 end
 
 def get_winner(player, computer)
@@ -51,8 +67,7 @@ def get_winner(player, computer)
 end
 
 def get_choice
-  choice = ''
-  loop do
+  while true
     prompt("Choose one: #{VALID_CHOICES.join(', ')}")
     choice = gets.chomp.strip
     VALID_SHORTHAND.each do |shorthand, full|
@@ -60,11 +75,8 @@ def get_choice
         choice = full
       end
     end
-    if VALID_CHOICES.include?(choice)
-      break
-    else
-      prompt("That's not a valid choice.")
-    end
+    break if VALID_CHOICES.include?(choice)
+    prompt("That's not a valid choice.")
   end
   choice
 end
@@ -85,18 +97,12 @@ def play_round
     computer_choice = VALID_CHOICES.sample
     prompt("You chose #{choice}; Computer chose: #{computer_choice}")
     winner = get_winner(choice, computer_choice)
-    player_score +=1 if winner == 'player'
+    player_score += 1 if winner == 'player'
     computer_score += 1 if winner == 'computer'
-    display_results(winner)
-    match +=1
+    display_match_results(winner)
+    match += 1
   end
-  prompt("At the end of that round you scored #{player_score}, "\
-     "Computer scored #{computer_score}")
-  if player_score > computer_score
-    prompt("Congratulations! You won!")
-  else
-    prompt("Better luck next time...")
-  end
+  display_round_results(player_score, computer_score)
 end
 
 # main program
@@ -105,3 +111,4 @@ loop do
   play_round
   break unless play_again?
 end
+prompt('Goodbye!')
