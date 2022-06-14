@@ -1,5 +1,5 @@
-#  Mortgage / Car Loan Calculator
-
+# Mortgage / Car Loan Calculator
+# method definitions
 def prompt(message)
   puts "=> #{message}"
 end
@@ -22,6 +22,25 @@ def valid_number?(number)
   number.to_f.to_s == number || number.to_i.to_s == number
 end
 
+def say_hello(name)
+  prompt(format(WORDS[:name_greet], name: name))
+end
+
+def say_goodbye(name)
+  prompt(format(WORDS[:goodbye], name: name))
+end
+
+def go_again?
+  prompt(WORDS[:again])
+  answer = nil
+  loop do
+    answer = gets.chomp.downcase
+    break if answer == 'y' || answer == 'n'
+    prompt(WORDS[:yes_or_no])
+  end
+  answer == 'y'
+end
+
 def get_name
   prompt(WORDS[:name])
   loop do
@@ -38,17 +57,6 @@ def get_figure(message)
     return figure if valid_number?(figure)
     prompt(WORDS[:valid_number])
   end
-end
-
-def go_again?
-  prompt(WORDS[:again])
-  answer = nil
-  loop do
-    answer = gets.chomp.downcase
-    break if answer == 'y' || answer == 'n'
-    prompt(WORDS[:yes_or_no])
-  end
-  answer == 'y'
 end
 
 def get_repayments(loan_amount, apr, duration_years)
@@ -78,22 +86,28 @@ def display(table)
   end
 end
 
-# get string data from file to allow for other languages
+# main program
+system('clear')
+
+# get string data from file to allow for other languages than English
 require 'yaml'
 word_hash = YAML.load_file('loan_calculator.yml')
 WORDS = word_hash[:english]
-system('clear')
-prompt(WORDS[:greeting])
+
 name = get_name
-prompt(format(WORDS[:name_greet], name: name))
-# main program loop
+say_hello(name)
+
+# main loop
 loop do
   loan_amount = get_figure(WORDS[:amount_prompt]).to_f
   apr = get_figure(WORDS[:apr_prompt]).to_f
   duration_years = get_figure(WORDS[:duration_prompt]).to_f
+
   results = get_repayments(loan_amount, apr, duration_years)
+
   table = tabulate(results)
   display(table)
+
   break unless go_again?
 end
-prompt(format(WORDS[:goodbye], name: name))
+say_goodbye(name)

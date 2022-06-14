@@ -1,3 +1,6 @@
+# Rock paper scissors (lizard Spock) with bonus features
+
+# constant definitions
 VALID_CHOICES = %w(rock paper scissors lizard spock)
 
 VALID_SHORTHAND = {
@@ -25,13 +28,46 @@ X_BEATS_Y = {
   }
 }
 
+# method definitions
 def prompt(message)
   puts "=> #{message}"
+end
+
+def play_again?
+  prompt('Do you want to play again?')
+  answer = gets.chomp.downcase
+  answer.start_with?('y')
 end
 
 def win?(player1, player2)
   X_BEATS_Y[:case_1][player1.to_sym] == player2 ||
     X_BEATS_Y[:case_2][player1.to_sym] == player2
+end
+
+def get_choice
+  while true
+    prompt("Choose one: #{VALID_CHOICES.join(', ')}")
+    choice = gets.chomp.strip
+    VALID_SHORTHAND.each do |shorthand, full|
+      if choice.start_with?(shorthand)
+        choice = full
+      end
+    end
+    break if VALID_CHOICES.include?(choice)
+    prompt("That's not a valid choice.")
+  end
+  choice
+end
+
+def get_winner(player, computer)
+  if win?(player, computer)
+    winner = 'player'
+  elsif win?(computer, player)
+    winner = 'computer'
+  else
+    winner = 'tie'
+  end
+  winner
 end
 
 def display_match_results(winner)
@@ -55,38 +91,6 @@ def display_round_results(player_score, computer_score)
   end
 end
 
-def get_winner(player, computer)
-  if win?(player, computer)
-    winner = 'player'
-  elsif win?(computer, player)
-    winner = 'computer'
-  else
-    winner = 'tie'
-  end
-  winner
-end
-
-def get_choice
-  while true
-    prompt("Choose one: #{VALID_CHOICES.join(', ')}")
-    choice = gets.chomp.strip
-    VALID_SHORTHAND.each do |shorthand, full|
-      if choice.start_with?(shorthand)
-        choice = full
-      end
-    end
-    break if VALID_CHOICES.include?(choice)
-    prompt("That's not a valid choice.")
-  end
-  choice
-end
-
-def play_again?
-  prompt('Do you want to play again?')
-  answer = gets.chomp.downcase
-  answer.start_with?('y')
-end
-
 def play_round
   player_score = 0
   computer_score = 0
@@ -105,10 +109,10 @@ def play_round
   display_round_results(player_score, computer_score)
 end
 
-# main program
+# main program loop
 loop do
   system('clear')
   play_round
   break unless play_again?
 end
-prompt('Goodbye!')
+prompt('So long!')
