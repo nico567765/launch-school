@@ -65,6 +65,7 @@ def get_repayments(loan_amount, apr, duration_years)
   monthly_payment = loan_amount *
                     (monthly_interest / (1 -
                     (1 + monthly_interest)**(-duration_months)))
+
   { monthly_payment: monthly_payment.round(2),
     number_of_payments: duration_months,
     total_repayed: (monthly_payment * duration_months).round(2),
@@ -89,7 +90,7 @@ end
 # main program
 system('clear')
 
-# get string data from file to allow for other languages than English
+# get string data from file to futureproof for languages other than English
 require 'yaml'
 word_hash = YAML.load_file('loan_calculator.yml')
 WORDS = word_hash[:english]
@@ -110,4 +111,5 @@ loop do
 
   break unless go_again?
 end
+
 say_goodbye(name)
