@@ -29,34 +29,14 @@ X_BEATS_Y = {
 }
 
 # method definitions
+
 def prompt(message)
   puts "=> #{message}"
-end
-
-def play_again?
-  prompt('Do you want to play again?')
-  answer = gets.chomp.downcase
-  answer.start_with?('y')
 end
 
 def win?(player1, player2)
   X_BEATS_Y[:case_1][player1.to_sym] == player2 ||
     X_BEATS_Y[:case_2][player1.to_sym] == player2
-end
-
-def get_choice
-  while true
-    prompt("Choose one: #{VALID_CHOICES.join(', ')}")
-    choice = gets.chomp.strip
-    VALID_SHORTHAND.each do |shorthand, full|
-      if choice.start_with?(shorthand)
-        choice = full
-      end
-    end
-    break if VALID_CHOICES.include?(choice)
-    prompt("That's not a valid choice.")
-  end
-  choice
 end
 
 def get_winner(player, computer)
@@ -70,7 +50,37 @@ def get_winner(player, computer)
   winner
 end
 
-def display_match_results(winner)
+def get_choice(match)
+  prompt("Match #{match}:")
+  while true
+    prompt("Choose one: #{VALID_CHOICES.join(', ')}")
+    choice = gets.chomp.downcase.strip
+    VALID_SHORTHAND.each do |shorthand, full|
+      if choice == shorthand
+        choice = full
+      end
+    end
+    break if VALID_CHOICES.include?(choice)
+    prompt("That's not a valid choice.")
+  end
+  choice
+end
+
+def play_again?
+  prompt('Do you want to play again?')
+  answer = gets.chomp.downcase.strip
+  answer.start_with?('y')
+end
+
+def display_welcome
+  prompt('Welcome to Rock, Paper, Scissors, Lizard, Spock!')
+  prompt('First to win 3 matches wins the round')
+  puts
+end
+
+def display_match_results(player_choice, computer_choice, winner)
+  system('clear')
+  prompt("You chose #{player_choice}; Computer chose: #{computer_choice}")
   if winner == 'player'
     prompt("You won!")
   elsif winner == 'computer'
@@ -92,18 +102,17 @@ def display_round_results(player_score, computer_score)
 end
 
 def play_round
+  display_welcome
   player_score = 0
   computer_score = 0
   match = 1
   until player_score == 3 || computer_score == 3
-    prompt("Match #{match}:")
-    choice = get_choice
+    player_choice = get_choice(match)
     computer_choice = VALID_CHOICES.sample
-    prompt("You chose #{choice}; Computer chose: #{computer_choice}")
-    winner = get_winner(choice, computer_choice)
+    winner = get_winner(player_choice, computer_choice)
     player_score += 1 if winner == 'player'
     computer_score += 1 if winner == 'computer'
-    display_match_results(winner)
+    display_match_results(player_choice, computer_choice, winner)
     match += 1
   end
   display_round_results(player_score, computer_score)
@@ -115,4 +124,4 @@ loop do
   play_round
   break unless play_again?
 end
-prompt('So long!')
+prompt('Goodbye!')

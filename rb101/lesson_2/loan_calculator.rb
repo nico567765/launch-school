@@ -1,4 +1,10 @@
 # Mortgage / Car Loan Calculator
+
+# get string data from file to futureproof for languages other than English
+require 'yaml'
+word_hash = YAML.load_file('loan_calculator.yml')
+WORDS = word_hash[:english]
+
 # method definitions
 def prompt(message)
   puts "=> #{message}"
@@ -19,7 +25,19 @@ def r_align(str)
 end
 
 def valid_number?(number)
-  number.to_f.to_s == number || number.to_i.to_s == number
+  (number.to_f > 0) &&
+    (number.to_f.to_s == number || number.to_i.to_s == number)
+end
+
+def go_again?
+  prompt(WORDS[:again])
+  answer = nil
+  loop do
+    answer = gets.chomp.downcase.strip
+    break if answer == 'y' || answer == 'n'
+    prompt(WORDS[:yes_or_no])
+  end
+  answer == 'y'
 end
 
 def say_hello(name)
@@ -30,21 +48,10 @@ def say_goodbye(name)
   prompt(format(WORDS[:goodbye], name: name))
 end
 
-def go_again?
-  prompt(WORDS[:again])
-  answer = nil
-  loop do
-    answer = gets.chomp.downcase
-    break if answer == 'y' || answer == 'n'
-    prompt(WORDS[:yes_or_no])
-  end
-  answer == 'y'
-end
-
 def get_name
   prompt(WORDS[:name])
   loop do
-    name = gets.chomp
+    name = gets.chomp.strip
     return name unless name.empty?
     prompt(WORDS[:name_empty])
   end
@@ -53,7 +60,7 @@ end
 def get_figure(message)
   loop do
     prompt(message)
-    figure = gets.chomp
+    figure = gets.chomp.strip
     return figure if valid_number?(figure)
     prompt(WORDS[:valid_number])
   end
@@ -81,7 +88,7 @@ def tabulate(results)
   table
 end
 
-def display(table)
+def display_repayments(table)
   table.each_with_index do |elem, idx|
     idx == 0 ? prompt(elem) : no_prompt(elem)
   end
@@ -89,25 +96,21 @@ end
 
 # main program
 system('clear')
-
-# get string data from file to futureproof for languages other than English
-require 'yaml'
-word_hash = YAML.load_file('loan_calculator.yml')
-WORDS = word_hash[:english]
-
 name = get_name
-say_hello(name)
 
 # main loop
 loop do
+  system('clear')
+  say_hello(name)
+
   loan_amount = get_figure(WORDS[:amount_prompt]).to_f
   apr = get_figure(WORDS[:apr_prompt]).to_f
   duration_years = get_figure(WORDS[:duration_prompt]).to_f
 
-  results = get_repayments(loan_amount, apr, duration_years)
+  repayments = get_repayments(loan_amount, apr, duration_years)
 
-  table = tabulate(results)
-  display(table)
+  repayment_table = tabulate(repayments)
+  display_repayments(repayment_table)
 
   break unless go_again?
 end

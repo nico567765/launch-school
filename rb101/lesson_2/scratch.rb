@@ -1,15 +1,13 @@
-LONGEST = 26
+name = "Lisa"
 
-def al(str)
-  str = str.to_s
-  str.ljust(LONGEST)
+def name
+  "George"
 end
 
-def ar(str)
-  str = str.to_s
-  str.rjust(10)
+
+
+def display_name(name)
+  puts name
 end
 
-puts al("Owls currently in the air:") + ar('389.986')
-puts al("Owls on the ground:") + ar('342')
-puts al("Owls underground:") + ar('232')
+display_name(name)
