@@ -1,1 +1,9 @@
-(1..99).each { |i| puts i if i.odd? }
+def leap_year?(year)
+#   if year % 400 == 0
+#     true
+#   elsif year % 100 == 0
+#     false
+#   else
+#     year % 4 == 0
+#   end
+# end
