@@ -22,10 +22,26 @@
 #   end
 # end
 
-def leap_year?(year)
-  (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0)
-end
+# def leap_year?(year)
+#   (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0)
+# end
 
+# Further exploration
+def leap_year?(year)
+  if year % 4 == 0
+    if year % 100 == 0
+      if year % 400 == 0
+        true
+      else
+        false
+      end
+    else
+      true
+    end
+  else
+    false
+  end
+end
 
 p leap_year?(2016) == true
 p leap_year?(2015) == false
