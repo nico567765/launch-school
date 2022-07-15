@@ -53,7 +53,7 @@ def hexadecimal_to_integer(string)
   }
 
   digits = string.chars.map do |char|
-    if ('A'..'z').include?(char)
+    if [*'A'..'Z', *'a'..'z'].include?(char)
       numbers[char.upcase]
     else
       numbers[char]
