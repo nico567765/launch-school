@@ -1,6 +1,7 @@
+require 'pry-byebug'
+
 INITIAL_MARKER = ' '
-PLAYER_MARKER = 'X'
-COMPUTER_MARKER = 'O'
+
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
                 [[1, 5, 9], [3, 5, 7]]              # diagonals
@@ -12,7 +13,7 @@ end
 # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 def display_board(brd, player_score, computer_score)
   system('clear')
-  puts "Player is #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
+  puts "Player is #{@player_marker}. Computer is #{@computer_marker}."
   puts "Player score: #{player_score}. Computer score: #{computer_score}."
   puts ""
   puts "     |     |"
@@ -59,17 +60,40 @@ def player_places_piece!(brd)
     break if empty_squares(brd).include?(square)
     prompt "Sorry, that's not a valid choice"
   end
-  brd[square] = PLAYER_MARKER
+  brd[square] = @player_marker
 end
 
-def computer_places_piece!(brd)
-  if threat?(brd)
-    neutralize_threat(brd)
-  else
-    square = empty_squares(brd).sample
-    brd[square] = COMPUTER_MARKER
+def find_significant_square(line, brd, marker)
+  if brd.values_at(*line).count(marker) == 2
+    brd.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys.first
   end
 end
+
+# rubocop:disable Metrics/CyclomaticComplexity
+def computer_places_piece!(brd)
+  square = nil
+
+  # offense
+  WINNING_LINES.each do |line|
+    square = find_significant_square(line, brd, @computer_marker)
+    break if square
+  end
+
+  # defense
+  if !square
+    WINNING_LINES.each do |line|
+      square = find_significant_square(line, brd, @player_marker)
+      break if square
+    end
+  end
+
+  square = 5 if !square && empty_squares(brd).include?(5)
+
+  square = empty_squares(brd).sample if !square
+
+  brd[square] = @computer_marker
+end
+# rubocop:enable Metrics/CyclomaticComplexity
 
 def board_full?(brd)
   empty_squares(brd).empty?
@@ -81,32 +105,10 @@ end
 
 def detect_winner(brd)
   WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(PLAYER_MARKER) == 3
+    if brd.values_at(*line).count(@player_marker) == 3
       return 'Player'
-    elsif brd.values_at(*line).count(COMPUTER_MARKER) == 3
+    elsif brd.values_at(*line).count(@computer_marker) == 3
       return 'Computer'
-    end
-  end
-  nil
-end
-
-def threat?(brd)
-  WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(PLAYER_MARKER) == 2
-      return true
-    end
-  end
-  false
-end
-
-def neutralize_threat(brd)
-  WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(PLAYER_MARKER) == 2
-      line.each do |key|
-        if brd[key] == INITIAL_MARKER
-          brd[key] = COMPUTER_MARKER
-        end
-      end
     end
   end
   nil
@@ -126,19 +128,55 @@ def declare_game_winner(brd, player_score, computer_score)
   puts
 end
 
+def choose_who_begins
+  system('clear')
+  prompt "Who goes first? Choose:"
+  prompt "1. Player"
+  prompt "2. Computer"
+  move_order = ''
+  loop do
+    move_order = gets.chomp
+    break if move_order == '1' || move_order == '2'
+    prompt "That is not a valid choice."
+  end
+  move_order.to_i
+end
+
 player_score = 0
 computer_score = 0
+
+move_order = choose_who_begins
+case move_order
+when 1
+  @player_marker = 'X'
+  @computer_marker = 'O'
+when 2
+  @player_marker = 'O'
+  @computer_marker = 'X'
+end
 
 loop do
   board = initialize_board
 
   loop do
-    display_board(board, player_score, computer_score)
-
-    player_places_piece!(board)
+    if move_order == 1
+      display_board(board, player_score, computer_score)
+    end
+    if move_order == 1
+      player_places_piece!(board)
+    else
+      computer_places_piece!(board)
+    end
     break if someone_won?(board) || board_full?(board)
 
-    computer_places_piece!(board)
+    if move_order == 2
+      display_board(board, player_score, computer_score)
+    end
+    if move_order == 1
+      computer_places_piece!(board)
+    else
+      player_places_piece!(board)
+    end
     break if someone_won?(board) || board_full?(board)
   end
 

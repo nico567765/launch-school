@@ -48,6 +48,65 @@
 #   str
 # end
 
+# def threat?(brd)
+#   WINNING_LINES.each do |line|
+#     if brd.values_at(*line).count(PLAYER_MARKER) == 2 &&
+#        brd.values_at(*line).count(INITIAL_MARKER) == 1
+#       return true
+#     end
+#   end
+#   false
+# end
+
+# def opportunity?(brd)
+#   WINNING_LINES.each do |line|
+#     if brd.values_at(*line).count(COMPUTER_MARKER) == 2 &&
+#        brd.values_at(*line).count(INITIAL_MARKER) == 1
+#       return true
+#     end
+#   end
+#   false
+# end
+
+# def neutralize_threat!(brd)
+#   WINNING_LINES.each do |line|
+#     if brd.values_at(*line).count(PLAYER_MARKER) == 2 &&
+#        brd.values_at(*line).count(INITIAL_MARKER) == 1
+#       line.each do |key|
+#         if brd[key] == INITIAL_MARKER
+#           brd[key] = COMPUTER_MARKER
+#           return nil
+#         end
+#       end
+#     end
+#   end
+#   nil
+# end
+
+# def take_opportunity!(brd)
+#   WINNING_LINES.each do |line|
+#     if brd.values_at(*line).count(COMPUTER_MARKER) == 2 &&
+#        brd.values_at(*line).count(INITIAL_MARKER) == 1
+#       line.each do |key|
+#         if brd[key] == INITIAL_MARKER
+#           brd[key] = COMPUTER_MARKER
+#           return nil
+#         end
+#       end
+#     end
+#   end
+#   nil
+# end
+
+  # if opportunity?(brd)
+  #   take_opportunity!(brd)
+  # elsif threat?(brd)
+  #   neutralize_threat!(brd)
+  # else
+  #   square = empty_squares(brd).sample
+  #   brd[square] = COMPUTER_MARKER
+  # end
+
 def joinor(arr, separator1 = ', ', separator2 = 'or')
   case arr.size
   when 0 then ''
