@@ -30,42 +30,19 @@ def display_board(brd, player_score, computer_score)
 end
 # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-def initialize_board
-  new_board = {}
-  (1..9).each { |num| new_board[num] = INITIAL_MARKER }
-  new_board
+def someone_won?(brd)
+  !!detect_winner(brd)
 end
 
-def empty_squares(brd)
-  brd.keys.select { |num| brd[num] == INITIAL_MARKER }
-end
-
-def joinor(arr, separator1 = ', ', separator2 = 'or')
-  case arr.size
-  when 0 then ''
-  when 1 then arr.first
-  when 2 then arr.join(" #{separator2} ")
-  else
-    arr[-1] = "#{separator2} #{arr.last}"
-    arr.join(separator1)
+def detect_winner(brd)
+  WINNING_LINES.each do |line|
+    if brd.values_at(*line).count(@player_marker) == 3
+      return 'Player'
+    elsif brd.values_at(*line).count(@computer_marker) == 3
+      return 'Computer'
+    end
   end
-end
-
-def player_places_piece!(brd)
-  square = ''
-  loop do
-    prompt "Choose a square (#{joinor(empty_squares(brd))}):"
-    square = gets.chomp.to_i
-    break if empty_squares(brd).include?(square)
-    prompt "Sorry, that's not a valid choice"
-  end
-  brd[square] = @player_marker
-end
-
-def find_significant_square(line, brd, marker)
-  if brd.values_at(*line).count(marker) == 2
-    brd.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys.first
-  end
+  nil
 end
 
 # rubocop:disable Metrics/CyclomaticComplexity
@@ -94,23 +71,15 @@ def computer_places_piece!(brd)
 end
 # rubocop:enable Metrics/CyclomaticComplexity
 
-def board_full?(brd)
-  empty_squares(brd).empty?
-end
-
-def someone_won?(brd)
-  !!detect_winner(brd)
-end
-
-def detect_winner(brd)
-  WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(@player_marker) == 3
-      return 'Player'
-    elsif brd.values_at(*line).count(@computer_marker) == 3
-      return 'Computer'
-    end
+def player_places_piece!(brd)
+  square = ''
+  loop do
+    prompt "Choose a square (#{joinor(empty_squares(brd))}):"
+    square = gets.chomp.to_i
+    break if empty_squares(brd).include?(square)
+    prompt "Sorry, that's not a valid choice"
   end
-  nil
+  brd[square] = @player_marker
 end
 
 def declare_game_winner(brd, player_score, computer_score)
@@ -126,6 +95,37 @@ def declare_game_winner(brd, player_score, computer_score)
   end
   puts
   nil
+end
+
+def find_significant_square(line, brd, marker)
+  if brd.values_at(*line).count(marker) == 2
+    brd.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys.first
+  end
+end
+
+def initialize_board
+  new_board = {}
+  (1..9).each { |num| new_board[num] = INITIAL_MARKER }
+  new_board
+end
+
+def empty_squares(brd)
+  brd.keys.select { |num| brd[num] == INITIAL_MARKER }
+end
+
+def joinor(arr, separator1 = ', ', separator2 = 'or')
+  case arr.size
+  when 0 then ''
+  when 1 then arr.first
+  when 2 then arr.join(" #{separator2} ")
+  else
+    arr[-1] = "#{separator2} #{arr.last}"
+    arr.join(separator1)
+  end
+end
+
+def board_full?(brd)
+  empty_squares(brd).empty?
 end
 
 def place_piece!(brd, current_player)
